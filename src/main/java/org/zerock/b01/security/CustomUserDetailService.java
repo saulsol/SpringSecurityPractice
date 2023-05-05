@@ -16,13 +16,10 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class CustomUserDetailService implements UserDetailsService {
 
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
-    // 스프링 시큐리티는 기본적으로 PasswordEncoder라는 존재를 필요로 한다.
-    // 없으면 ID 값이랑 Password 받을 때 오류남 -> 'There is no PasswordEncoder'
 
+    private final PasswordEncoder passwordEncoder;
+    // final을 붙이지 않으면 의존성 주입이 되지 않음
+    // @RequiredArgsConstructor 을 사용해서
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -32,7 +29,7 @@ public class CustomUserDetailService implements UserDetailsService {
 
         UserDetails userDetails = User.builder()
                 .username("user1")
-                .password("1111")
+                .password(passwordEncoder.encode("1111")) // 패스워드 인코더 필요, 즉 유저 디테일 객체는 PasswordEncoder 객채를 필요로 한다
                 .authorities("ROLE_USER")
                 .build();
 
