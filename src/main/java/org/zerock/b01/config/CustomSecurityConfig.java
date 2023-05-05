@@ -7,6 +7,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
 @Log4j2
@@ -38,6 +40,14 @@ public class CustomSecurityConfig {
         );
 
     }
+
+
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
+    // 스프링 시큐리티는 기본적으로 PasswordEncoder라는 존재를 필요로 한다.
+    // 없으면 ID 값이랑 Password 받을 때 오류남 -> 'There is no PasswordEncoder'
 
 
 }
