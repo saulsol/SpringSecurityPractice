@@ -11,6 +11,11 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl;
+import org.zerock.b01.security.CustomUserDetailService;
+import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
+
+import javax.sql.DataSource;
 
 @Log4j2
 @Configuration
@@ -18,12 +23,24 @@ import org.springframework.security.web.SecurityFilterChain;
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class CustomSecurityConfig {
 
+    private final DataSource dataSource;
+    private final CustomUserDetailService customUserDetailService;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception{
+        
         log.info("-----------------configure------------------");
+        // 커스텀 로그인 페이지
         httpSecurity.formLogin().loginPage("/member/login");
+        //CSRF 토큰 비활성화
         httpSecurity.csrf().disable();
+
+        httpSecurity.rememberMe()
+                .key("12345678")
+                .tokenRepository(persistentTokenRepository())
+                .userDetailsService(customUserDetailService)
+                .tokenValiditySeconds(60*60*24*30);
+
         return httpSecurity.build();
     }
 
@@ -51,6 +68,14 @@ public class CustomSecurityConfig {
     }
     // 스프링 시큐리티는 기본적으로 PasswordEncoder라는 존재를 필요로 한다.
     // 없으면 ID 값이랑 Password 받을 때 오류남 -> 'There is no PasswordEncoder'
+
+
+    @Bean
+    public PersistentTokenRepository persistentTokenRepository() {
+        JdbcTokenRepositoryImpl repo = new JdbcTokenRepositoryImpl();
+        repo.setDataSource(dataSource);
+        return repo;
+    }
 
 
 }

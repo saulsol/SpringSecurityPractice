@@ -15,7 +15,12 @@ public class MemberController {
     @GetMapping("/login")
     public void loginGET(String error, String logout){
         log.info("login get.....");
-        log.info("");
+        log.info("logout: " + logout);
+
+        if(logout != null){
+            log.info("user logout.....");
+        }
+
     }
 
 }

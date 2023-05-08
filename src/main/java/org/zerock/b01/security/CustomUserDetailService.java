@@ -13,13 +13,16 @@ import org.springframework.stereotype.Service;
 
 @Log4j2
 @Service
-@RequiredArgsConstructor
 public class CustomUserDetailService implements UserDetailsService {
 
-
-    private final PasswordEncoder passwordEncoder;
+    private PasswordEncoder passwordEncoder;
     // final을 붙이지 않으면 의존성 주입이 되지 않음
     // @RequiredArgsConstructor 을 사용해서
+
+
+    public CustomUserDetailService() {
+        this.passwordEncoder = new BCryptPasswordEncoder();
+    }
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
