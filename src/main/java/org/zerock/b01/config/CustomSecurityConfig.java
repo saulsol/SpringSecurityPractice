@@ -22,7 +22,8 @@ public class CustomSecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception{
         log.info("-----------------configure------------------");
-        httpSecurity.formLogin();
+        httpSecurity.formLogin().loginPage("/member/login");
+        httpSecurity.csrf().disable();
         return httpSecurity.build();
     }
 
