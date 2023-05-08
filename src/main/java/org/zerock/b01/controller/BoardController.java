@@ -6,6 +6,7 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -74,10 +75,13 @@ public class BoardController {
     }
 
 
+    @PreAuthorize("hasRole('USER')")
     @GetMapping("/register")
     public void registerGET(){
 
     }
+
+    // @PreAuthorize 안에는 표현식을 이용해서 특정한 권한을 가진 사용자만이 접근 가능하도록 지정한다.
 
     @PostMapping("/register")
     public String registerPost(@Valid BoardDTO boardDTO, BindingResult bindingResult, RedirectAttributes redirectAttributes){
